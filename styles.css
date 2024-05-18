@@ -72,3 +72,9 @@ header {
 .product-card button:hover {
     background: #0056b3;
 }
+
+
+
+.img-card img{
+    width: 200px;
+}

@@ -30,8 +30,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 productCard.classList.add('product-card');
                 productCard.innerHTML = `
                     <h2>${item.nameComplete}</h2>
-                `;
+                    `;
                 productGrid.appendChild(productCard);
+                item.images.forEach(image => {
+                    const imgCard = document.createElement('div');
+                    imgCard.classList.add('img-card');
+                    imgCard.innerHTML = `<img src="${image.imageUrl}" alt="Minha Figura">`;
+                    productGrid.appendChild(imgCard);
+                });
+                item.sellers.forEach(seller => {
+                    const sellerCard = document.createElement('div');
+                    sellerCard.classList.add('seller-card');
+                    sellerCard.innerHTML = `<h4>R$ ${seller.commertialOffer.Price}</h4>`;
+                    productGrid.appendChild(sellerCard);
+
+                });
+
             });
         });
     }
