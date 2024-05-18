@@ -23,6 +23,7 @@ header {
 
 .controls {
     display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
@@ -39,7 +40,7 @@ header {
 
 #product-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
 }
 
@@ -53,6 +54,8 @@ header {
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-card h2 {
@@ -74,7 +77,19 @@ header {
 }
 
 
+.product-card img{
+    width: 100px;
+}
 
-.img-card img{
-    width: 200px;
+
+.product-card-variation {
+    display: flex;
+}
+.product-card-variation-box img {
+    width: 30px;
+}
+
+.product-card-variation-box{
+    display: flex;
+    flex-wrap: wrap;
 }

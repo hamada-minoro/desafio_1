@@ -1,53 +1,85 @@
-
-const params = new URLSearchParams(window.location.search);
-const id = params.get('id');
-
 document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
     const apiUrl = `https://desafio.xlow.com.br/search/${id}`;
     const productGrid = document.getElementById('product-grid');
     const itemCountElement = document.getElementById('item-count');
-    const changeColumnButton = document.getElementById('change-column');
-
-    let productsPerPage = 3; // Quantidade de produtos por linha
 
     async function fetchProducts() {
         try {
             const response = await fetch(apiUrl);
-            const products = await response.json();
-            renderProducts(products);
+            if (!response.ok) {
+                throw new Error('Erro ' + response.statusText);
+            }
+            const productss = await response.json();
+            renderProducts(productss);
         } catch (error) {
-            console.error('Erro ao buscar produtos:', error);
+            console.error('Error fetching products:', error);
         }
     }
 
     function renderProducts(products) {
         productGrid.innerHTML = '';
         itemCountElement.textContent = `Número de itens: ${TotalItems(products)}`;
+        
         products.forEach(product => {
-           const itemSlice =  product.items.slice(0, productsPerPage);
-            itemSlice.forEach(item => {       
-                const productCard = document.createElement('div');
-                productCard.classList.add('product-card');
-                productCard.innerHTML = `
-                    <h2>${item.nameComplete}</h2>
-                    `;
-                productGrid.appendChild(productCard);
+            const productCard = document.createElement('div');
+            productCard.classList.add('product-card');
+
+            const productCardVBox = document.createElement('div');
+            productCardVBox.classList.add('product-card-variation-box');
+           
+            product.items.forEach(item => {       
+                const imgCard = document.createElement('div');
+                imgCard.classList.add('img-card');
+
+                productCard.innerHTML = `<h2>${item.nameComplete}</h2>`; 
+
                 item.images.forEach(image => {
-                    const imgCard = document.createElement('div');
-                    imgCard.classList.add('img-card');
-                    imgCard.innerHTML = `<img src="${image.imageUrl}" alt="Minha Figura">`;
-                    productGrid.appendChild(imgCard);
+                    const imageElement = document.createElement("img");
+                    imageElement.src = `${image.imageUrl}`;
+                    imgCard.appendChild(imageElement);
+                    productCard.appendChild(imgCard);
                 });
+                
                 item.sellers.forEach(seller => {
-                    const sellerCard = document.createElement('div');
-                    sellerCard.classList.add('seller-card');
-                    sellerCard.innerHTML = `<h4>R$ ${seller.commertialOffer.Price}</h4>`;
-                    productGrid.appendChild(sellerCard);
+                    const nameElement = document.createElement("h4");
+                    nameElement.textContent = `R$ ${seller.commertialOffer.Price}`;
+                    nameElement.classList.add("titulo");
+                    productCard.appendChild(nameElement);
 
+                    const buyButton = document.createElement("button");
+                    buyButton.textContent = "Comprar";
+                    buyButton.classList.add("buyButton");
+                    productCard.appendChild(buyButton);
+                });
+                
+                productCard.appendChild(productCardVBox);
+                productGrid.appendChild(productCard);
+            });  
+
+            product.items.forEach(item => {       
+                
+                item.images.forEach(image => {
+                    const imageElementV = document.createElement("img");
+                    imageElementV.src = `${image.imageUrl}`;
+                    productCardVBox.appendChild(imageElementV);
+
+
+                    imageElementV.addEventListener('click', () => {
+                        const mainImageElement = productCard.querySelector('.img-card img');
+                        if (mainImageElement) {
+                            const imageElementOld = mainImageElement.src
+                            mainImageElement.src = imageElementV.src;
+                            imageElementV.src = imageElementOld;
+                        }
+                    });
                 });
 
-            });
+            });  
+            
         });
+        
     }
 
     function TotalItems(products) {
@@ -58,12 +90,5 @@ document.addEventListener('DOMContentLoaded', () => {
         return totalItems;
     }
 
-   
-    changeColumnButton.addEventListener('click', () => {
-        productsPerPage = productsPerPage === 3 ? 10 : 3; 
-        fetchProducts();
-    });
-
     fetchProducts();
 });
-
